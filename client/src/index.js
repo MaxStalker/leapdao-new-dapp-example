@@ -1,18 +1,8 @@
-const selectStep = step => {
-  return document.querySelector(`.step[data-step="${step}"]`);
-};
+import web3 from "web3";
+import { showStep, turn, clearGameField, setGameField } from "./utility";
+import { activateWallet } from "./plasma";
 
-const showStep = (allSteps, activeStep) => {
-  console.log('Show active step:', activeStep);
-  allSteps.forEach(step => {
-    const stepName = step.dataset.step;
-    if (stepName === activeStep){
-      step.classList.add('step--active');
-    } else {
-      step.classList.remove('step--active');
-    }
-  });
-};
+const GAME_SERVER = 'http://localhost:3000/game';
 
 const main = async () => {
   console.log("Start Application");
@@ -23,28 +13,57 @@ const main = async () => {
   const buttonsDOM = document.querySelectorAll("button");
   const buttons = [].slice.call(buttonsDOM);
 
-  showStep(allSteps, "intro");
+
+  let account = null;
+
+  showStep("intro");
+  // showStep("game-round");
 
   buttons.forEach(button => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const parent = button.parentElement;
       const currentStep = parent.dataset.step;
+      const progress = parent.querySelector('.progress');
 
       switch (currentStep) {
         case "intro": {
-          showStep(allSteps, "connect-wallet");
+          showStep("connect-wallet");
           break;
         }
         case "connect-wallet": {
-          // Activate Metamask here
+          turn('off', button);
+          turn('on', progress);
+          const accounts = await activateWallet();
+          turn('off', progress);
+          if (!accounts){
+            turn('on', button);
+          } else {
+            account = accounts[0]; // take first account
+            showStep("game-rules");
+          }
+          break;
+        }
 
-          //showStep(allSteps, "connect-wallet");
+        case "game-rules": {
+          showStep("game-round");
           break;
         }
-        case "win": {
-          showStep(allSteps, "game-rules");
-          break;
+
+        case "game-round": {
+          turn('off',button);
+          turn('on', progress);
+          clearGameField();
+          const response = await fetch(GAME_SERVER+'/startRound')
+          const {words} = await response.json();
+          setGameField(words);
+          turn('off',progress);
         }
+
+        case "win":
+        case "lose":
+          showStep("game-round");
+          break;
+
         default: {
           return;
         }
