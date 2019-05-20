@@ -1,0 +1,11 @@
+{
+  "name": "leapdao-new-dapp",
+  "version": "1.0.0",
+  "description": "Example\u0001 dApp using Leap Network",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Max Daunarovich",
+  "license": "ISC"
+}
