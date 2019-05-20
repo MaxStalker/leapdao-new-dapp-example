@@ -1,8 +1,57 @@
-body{
-    display: flex;
-    align-items: center;
-    min-height: 100vh;
+body {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-family: "Lato", sans-serif;
 }
 .main {
-    background-color: red;
+  display: flex;
+  background-color: #eee;
+  min-height: 100vh;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.step{
+	display: none;
+	flex-direction: column;
+	align-items: center;
+}
+.step--active{
+	display: flex;
+}
+
+h1.header {
+	font-weight: 900;
+  font-size: 32px;
+  margin: 0 0 12px;
+}
+
+p.copy {
+  font-size: 16px;
+  margin: 0 0 24px;
+
+}
+
+button{
+	border: none;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-weight: 700;
+	letter-spacing: 1px;
+	padding: 16px 20px;
+	flex: 0 0 auto;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.nav-button{
+	color:white;
+	background-color: green;
+}
+
+.nav-button:hover{
+	background-color: #418047;
 }

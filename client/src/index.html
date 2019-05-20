@@ -1,0 +1,45 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Basic Leap Network Application</title>
+	<script src="./index.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="./styles.css">
+</head>
+<body>
+<div id="app" class="main">
+	<div class="step" data-step="intro">
+		<h1 class="header">Welcome to Plasma Word Game</h1>
+		<p class="copy">Rules are simple - guess the word Game Master selected and win some tokens!</p>
+		<button class="nav-button">Start Game</button>
+	</div>
+
+	<div class="step" data-step="connect-wallet">
+		<h1 class="header">Allow Wallet Connection</h1>
+		<p class="copy">In order to sign and send transactions you need to connect your wallet</p>
+		<button class="nav-button">Activate Wallet</button>
+	</div>
+
+	<div class="step" data-step="game-rules">
+		<h1 class="header">Make your move</h1>
+		<p class="copy">You will be presented with choise of 3 words and you need to pick correct</p>
+		<button class="nav-button">Start Round</button>
+	</div>
+
+	<div class="step" data-step="lose">
+		<h1 class="header">You Lost!</h1>
+		<p class="copy">Better luck next time!</p>
+		<button class="nav-button">New Round</button>
+	</div>
+
+	<div class="step step--active" data-step="win">
+		<h1 class="header">You Won!</h1>
+		<p class="copy">Well done. Try again!</p>
+		<button class="nav-button">New Round</button>
+	</div>
+</div>
+</body>
+</html>
