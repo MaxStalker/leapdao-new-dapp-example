@@ -11,5 +11,10 @@
   },
   "browserslist": [
     "since 2017-06"
-  ]
+  ],
+  "dependencies": {
+    "ethers": "^4.0.27",
+    "leap-core": "0.30.1",
+    "web3": "1.0.0-beta.36"
+  }
 }
