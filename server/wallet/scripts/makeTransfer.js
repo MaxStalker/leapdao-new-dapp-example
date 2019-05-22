@@ -8,7 +8,7 @@ const {
 } = require("../rpc-proxy");
 const { HOUSE_WALLET_MNEMONIC } = require("../../integration/mnemonics");
 const { RPC_URL, TOKEN_ADDRESS } = require("../config");
-const { showLog } = require("../../utils/utility");
+const { showLog } = require("../../utils/generic");
 const { parseEther } = ethers.utils;
 
 async function main() {
