@@ -8,6 +8,14 @@ const RAW = "eth_sendRawTransaction";
 const GET_TX = "eth_getTransactionByHash";
 const GET_RECEIPT = "eth_getTransactionReceipt";
 const CHECK_CONDITION = "checkSpendingCondition";
+const rpcMessages = {
+  RAW,
+  GET_COLOR,
+  GET_UNSPENT,
+  GET_TX,
+  GET_RECEIPT,
+  CHECK_CONDITION
+};
 
 // ABI
 const erc20Abi = require("./abis/erc20Abi");
@@ -34,10 +42,10 @@ const getTokenContract = (tokenAddress, plasma) => {
   return tokenContract;
 };
 const getBalance = (tokenAddress, plasma) => {
-  return async function (address) {
+  return async function(address) {
     const contract = getTokenContract(tokenAddress, plasma);
     return await contract.balanceOf(address);
-  }
+  };
 };
 const getTransaction = async (txHash, plasma) => {
   return plasma.send(GET_TX, [txHash]);
@@ -56,10 +64,10 @@ const makeTransfer = async (options, plasma) => {
   const rawTx = Tx.transferFromUtxos(utxos, from, to, amount, color)
     .signAll(privateKey)
     .hex();
-  try{
+  try {
     return await plasma.send(RAW, [rawTx]);
   } catch (e) {
-    console.log('Error during send');
+    console.log("Error during send");
     console.log(e.message);
   }
 };
@@ -81,9 +89,10 @@ const tokenBalanceChange = async options => {
     i++;
     await new Promise(resolve => setInterval(resolve, 1000));
     currentBalance = (await contract.balanceOf(address)).toString();
-    showProgress && process.stdout.write(
-      `\r   🕐 Waiting for balance change. Seconds passed: ${i}`
-    );
+    showProgress &&
+      process.stdout.write(
+        `\r   🕐 Waiting for balance change. Seconds passed: ${i}`
+      );
   } while (currentBalance === tempBalance && i < maxTries);
 
   const formattedBalance = currentBalance.toString();
@@ -92,12 +101,13 @@ const tokenBalanceChange = async options => {
   return currentBalance;
 };
 
-const checkCondition = async (options) => {
+const checkCondition = async options => {
   // Add actual code for spending condition
   return true;
 };
 
 module.exports = {
+  rpcMessages,
   getTokenColor,
   getTokenContract,
   getBalance,
