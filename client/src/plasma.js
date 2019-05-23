@@ -5,8 +5,8 @@ import { PLASMA_PROVIDER, TOKEN_ADDRESS } from "./const";
 import TOKEN_ABI from "./contracts/erc20Abi";
 
 let tokenColor = null;
-const rpc = new ethers.providers.JsonRpcProvider(PLASMA_PROVIDER);
-const plasma = helpers.extendWeb3(new Web3(PLASMA_PROVIDER));
+export const rpc = new ethers.providers.JsonRpcProvider(PLASMA_PROVIDER);
+export const plasma = helpers.extendWeb3(new Web3(PLASMA_PROVIDER));
 const tokenContract = new plasma.eth.Contract(TOKEN_ABI, TOKEN_ADDRESS);
 
 // If installed, Metamask will expose ethereum object on window
