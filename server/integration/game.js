@@ -19,7 +19,7 @@ const { RPC_URL, TOKEN_ADDRESS } = require("../wallet/config");
 const { generateNewRound } = require("../game");
 const wordGame = require("../build/contracts/WordGame");
 
-const { CHECK_CONDITION, RAW } = rpcMessages;
+const { CHECK_CONDITION, RAW, GET_RECEIPT } = rpcMessages;
 
 // Faucet
 async function requestFaucet(address, color) {
@@ -100,37 +100,6 @@ async function main() {
   const { answer, roundId, roundAddress, roundBalance } = rest;
   showLog(rest, "Round generated");
 
-  // Prepare Player Answer
-  const wordGameABI = new ethers.utils.Interface(wordGame.abi);
-  const answerBytes32 = ethers.utils.formatBytes32String(answer);
-  const msgData = wordGameABI.functions.roundResult.encode([
-    answerBytes32,
-    roundId
-  ]);
-
-  // Now Player deposits his part of the bet
-  const playerTransfer = await makeTransfer(
-    {
-      from: playerAddress,
-      to: roundAddress,
-      color: tokenColor,
-      amount: roundBet,
-      privateKey: playerPrivateKey
-    },
-    plasma
-  );
-
-  const roundBalanceAfterPlayer = await tokenBalanceChange(
-    {
-      contract: tokenContract,
-      address: roundAddress,
-      prevBalance: roundBalance
-    },
-    plasma
-  );
-
-  console.log("\n Player funded his part. Now processing house bet \n");
-
   const houseTransfer = await makeTransfer(
     {
       from: houseAddress,
@@ -146,10 +115,32 @@ async function main() {
     {
       contract: tokenContract,
       address: roundAddress,
-      prevBalance: roundBalanceAfterPlayer
+      prevBalance: roundBalance
     },
     plasma
   );
+
+  const playerTransfer = await makeTransfer(
+    {
+      from: playerAddress,
+      to: roundAddress,
+      color: tokenColor,
+      amount: roundBet,
+      privateKey: playerPrivateKey
+    },
+    plasma
+  );
+
+  const roundBalanceAfterPlayer = await tokenBalanceChange(
+    {
+      contract: tokenContract,
+      address: roundAddress,
+      prevBalance: roundBalanceAfterHouse
+    },
+    plasma
+  );
+
+  const playerBalanceAfterBet = await balanceOf(playerAddress);
 
   // Now we run spending condition
   const utxos = await getUnspentOutputs(roundAddress, tokenColor, plasma);
@@ -167,6 +158,14 @@ async function main() {
   ];
   const outputs = [];
   const unlockTransaction = Tx.spendCond(inputs, outputs);
+
+  // Add Player Answer
+  const wordGameABI = new ethers.utils.Interface(wordGame.abi);
+  const answerBytes32 = ethers.utils.formatBytes32String(answer);
+  const msgData = wordGameABI.functions.roundResult.encode([
+    answerBytes32,
+    roundId
+  ]);
   unlockTransaction.inputs[0].setMsgData(msgData);
   unlockTransaction.signAll(playerPrivateKey); // TODO: check if we need sign here at all
 
@@ -174,6 +173,12 @@ async function main() {
     unlockTransaction.hex()
   ]);
   showLog(checkUnlockTransaction, "Condition Check Result");
+
+  // If you set wrong message or mess up your contract code  you will get error
+  if (!checkUnlockTransaction.outputs) {
+    showLog('Spending condition code or message data is wrong','',"***");
+    process.exit(1);
+  }
   for (let i = 0; i < checkUnlockTransaction.outputs.length; i++) {
     unlockTransaction.outputs[i] = new Output.fromJSON(
       checkUnlockTransaction.outputs[i]
@@ -185,16 +190,30 @@ async function main() {
   ]);
   showLog(checkUnlockingScriptNew, "New Check");
   const finalHash = await plasma.send(RAW, [unlockTransaction.hex()]);
-  console.log(finalHash);
   const newRoundBalance = await tokenBalanceChange({
     contract: tokenContract,
     address: roundAddress,
-    prevBalance: roundBalanceAfterHouse
+    prevBalance: roundBalanceAfterPlayer
   });
 
+  console.log(finalHash);
+  const receipt = await plasma.send(GET_RECEIPT, [finalHash]);
+  showLog(receipt,'Receipt');
+  const winner = receipt.to === houseAddress.toLowerCase() ? "House" : "Player";
+  console.log(`${winner.toUpperCase()} WON!`);
 
-  //const fundTxHash = await fundCondition(roundHash, plasma);
-  //const resultTxHash = await sendAnswer(plasma);
+  const newPlayerBalance = await balanceOf(playerAddress);
+  showLog(
+    {
+      afterBet: playerBalanceAfterBet.toString(),
+      newBalance: newPlayerBalance.toString()
+    },
+    "Player Balance change"
+  );
+
+  const finalRoundBalance = await balanceOf(roundAddress);
+  showLog({roundBalance: finalRoundBalance.toString()},'New round Balance');
+
   process.exit(0);
 }
 
