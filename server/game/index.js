@@ -47,7 +47,8 @@ const generateNewRound = async (
 
   // Fund round condition
   // Please note, that currently funding transaction need to be paid in LEAP
-  const gasFee = 15000000; // set any number here we can get proper value here later
+  //const gasFee = 15000000; // set any number here we can get proper value here later
+  const gasFee = 5890000;
   const gasTransaction = await makeTransfer(
     {
       privateKey: housePrivateKey,
