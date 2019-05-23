@@ -18,9 +18,34 @@ body {
 	display: none;
 	flex-direction: column;
 	align-items: center;
+	background-color: rgb(245,245,245);
+	box-shadow: 0 10px 20px 2px rgba(0,0,0,0.1);
+	padding: 40px;
+	border-radius: 6px;
+	max-width: 600px;
+	text-align: center;
+	box-sizing: border-box;
 }
 .step--active{
 	display: flex;
+}
+
+.step--lose{
+	color: white;
+	background-color: #da6565;
+}
+
+.step--lose button{
+	background-color: #ad4747;
+}
+
+.step--win{
+	color: white;
+	background-color: #3da052;
+}
+
+.step--win button{
+	background-color: #247b36;
 }
 
 h1.header {
@@ -39,7 +64,6 @@ p.copy {
 }
 
 p.progress{
-	margin: 0 0 24px;
 	font-style: italic;
 	font-size: 14px;
 	color: #555;
@@ -61,15 +85,20 @@ button{
 .nav-button{
 	color:white;
 	background-color: green;
+	box-shadow: 0 3px 5px 1px rgba(0,0,0,0.1);
 }
 
 .game-field{
-	margin-bottom: 20px;
 }
 
 .word-toast{
-	margin-right: 8px;
+	margin-right: 10px;
+	margin-bottom: 10px;
 	background-color: #ccc;
+}
+
+.word-toast:last-of-type{
+	margin: 0;
 }
 
 .word-toast:hover{
@@ -78,5 +107,4 @@ button{
 }
 
 .nav-button:hover{
-	background-color: #418047;
 }

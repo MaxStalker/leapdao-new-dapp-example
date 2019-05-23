@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="app" class="main">
-	<div class="step" data-step="intro">
+	<div class="step step--active" data-step="intro">
 		<h1 class="header">Welcome to Plasma Word Game</h1>
 		<p class="copy">Rules are simple - guess the word Game Master selected and win some tokens!</p>
 		<button class="nav-button">Continue</button>
@@ -38,13 +38,13 @@
 		<button class="nav-button">Start Round</button>
 	</div>
 
-	<div class="step" data-step="lose">
+	<div class="step step--lose" data-step="lose">
 		<h1 class="header">You Lost!</h1>
 		<p class="copy">Better luck next time!</p>
 		<button class="nav-button">New Round</button>
 	</div>
 
-	<div class="step step--active" data-step="win">
+	<div class="step step--win" data-step="win">
 		<h1 class="header">You Won!</h1>
 		<p class="copy">Well done. Try again!</p>
 		<button class="nav-button">New Round</button>
