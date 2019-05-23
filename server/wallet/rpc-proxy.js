@@ -78,18 +78,25 @@ const tokenBalanceChange = async options => {
     showProgress = true,
     maxTries = 15
   } = options;
-  let tempBalance = prevBalance.toString();
-  let currentBalance = prevBalance;
-  if (!tempBalance) {
+
+  let currentBalance;
+  let tempBalance;
+
+  if (prevBalance) {
+    tempBalance = prevBalance.toString();
+    currentBalance = prevBalance;
+  } else {
     tempBalance = (await contract.balanceOf(address)).toString();
+    currentBalance = tempBalance;
   }
+
   let i = 0;
   do {
     i++;
     await new Promise(resolve => setInterval(resolve, 1000));
     currentBalance = (await contract.balanceOf(address)).toString();
-    if (showProgress){
-      if (process && process.stdout){
+    if (showProgress) {
+      if (process && process.stdout) {
         process.stdout.write(
           `\r   🕐 Waiting for balance change. Seconds passed: ${i}`
         );
