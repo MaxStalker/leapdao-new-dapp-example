@@ -1,35 +1,16 @@
-const { TOKEN_ADDRESS } = require("./config");
+const ethers = require("ethers");
+const { TOKEN_ADDRESS, RPC_URL, WALLET_MNEMONIC } = require("./config");
 const { getTokenColor, getTokenContract, makeTransfer, tokenBalanceChange } = require("./rpc-proxy");
 
+const plasma = new ethers.providers.JsonRpcProvider(RPC_URL);
+const wallet = new ethers.Wallet.fromMnemonic(WALLET_MNEMONIC);
+let tokenContract;
+let tokenColor;
 
-const fundGas = async ({roundAddress, wallet, plasma})=>{
-  const baseTokenAddress = TOKEN_ADDRESS;
-  const color = getTokenColor(baseTokenAddress);
-  const gasFee = 15000000;
-  const from = wallet.address;
-  const to =  roundAddress;
-  const privateKey = wallet.privateKey;
-  let gasTxHash;
-  try {
-    gasTxHash = await makeTransfer({
-      privateKey,
-      from,
-      to,
-      amount: gasFee,
-      plasma,
-      color,
-      logResult: true
-    });
-  } catch (e) {
-    console.log('Error during transfer');
-    console.log(e.message);
-  }
-  const contract = await getTokenContract(baseTokenAddress);
-  await tokenBalanceChange({contract, address: roundAddress});
-  return gasTxHash;
-};
+const getPlasma = () => plasma;
+const getWallet = () => wallet;
 
 module.exports = {
-  fundGas,
-  //fundCondition
+  getWallet,
+  getPlasma
 };
