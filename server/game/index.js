@@ -71,7 +71,8 @@ const generateNewRound = async (
     roundId,
     roundAddress,
     roundScript,
-    roundBalance
+    roundBalance,
+    codeBuffer
   };
 };
 
