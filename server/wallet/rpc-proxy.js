@@ -1,5 +1,5 @@
 const ethers = require("ethers");
-const { Tx, Output, Outpoint, helpers } = require("leap-core");
+const { Tx, Output, Outpoint } = require("leap-core");
 
 // RPC Calls
 const GET_COLOR = "plasma_getColor";
@@ -57,7 +57,6 @@ const getUnspentOutputs = async (from, color, plasma) => {
     outpoint: Outpoint.fromRaw(utxo.outpoint) // TODO check if we can use JSON
   }));
 };
-
 const makeTransfer = async (options, plasma) => {
   const { from, to, color, amount, privateKey } = options;
   const utxos = await getUnspentOutputs(from, color, plasma);
