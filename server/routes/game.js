@@ -1,27 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const ethers = require('ethers');
-const getWords = require("random-words");
-const { fundGas, fundCondition } = require("../wallet/wallet");
-
-const newRoundAddress = (words, lockWord) =>{
-  const lockBytes32 = ethers.utils.formatBytes32String(lockWord);
-  console.log(lockBytes32);
-
-  return ""
-};
+const ethers = require("ethers");
+const { generateNewRound } = require("../game");
+const { getPlasma, getWallet } = require("../wallet/wallet");
+const { TOKEN_ADDRESS } = require("../wallet/config");
 
 /* GET home page. */
-router.get("/startRound", (req, res) => {
-  const words = getWords({ exactly: 4, maxLength: 8 });
-  const pick = Math.floor(Math.random() * 4);
-  const lockWord = words[pick];
-  const roundAddress = newRoundAddress(words, lockWord);
-  console.log({roundAddress});
+router.post("/startRound", async (req, res) => {
+  const { playerAddress } = req.body;
+  const plasma = getPlasma();
+  const houseWallet = getWallet();
+  const tokenAddress = TOKEN_ADDRESS;
+  const roundBet = 100000000;
+  const round = await generateNewRound(
+    { houseWallet, playerAddress, tokenAddress, roundBet },
+    plasma
+  );
+  console.log(round);
+  const { roundAddress, roundId, words, codeBuffer } = round;
+  console.log({ codeBuffer });
   // 1) fund transaction
   // 2) send transaction address
 
-  res.status(200).send({ roundAddress, words });
+  res.status(200).send({ roundAddress, words, roundId, codeBuffer });
 });
 
 module.exports = router;
