@@ -15,6 +15,14 @@ const renderWord = word => `<button class="word-toast">${word}</button>`;
 const renderWordSet = words =>
   words.reduce((acc, word) => acc + renderWord(word), "");
 
+export const hideGameField = () => {
+  document.querySelector('.game-field').style.display = 'none'
+};
+
+export const showGameField = () => {
+  document.querySelector('.game-field').style.display = 'block'
+}
+
 //export const gameField = document.querySelector(".game-field");
 export const clearGameField = () => {
   document.querySelector(".game-field").innerHTML = "";
